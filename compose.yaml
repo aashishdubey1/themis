@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: themis-postgres
+    environment:
+        POSTGRES_USER: themis
+        POSTGRES_PASSWORD: 12345678
+        POSTGRES_DB: themis
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U themis"] 
+      interval: 5s 
+      timeout: 3s 
+      retries: 10
+   
+  redis:
+    image: redis:8-alpine 
+    container_name: themis-redis 
+    ports:
+      - "6379:6379"
+
+  nats:
+    image: nats:2.11-alpine
+    container_name: themis-nats
+    command: ["-js","-m","8222"]
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+
+
+volumes:
+  pgdata:
+
